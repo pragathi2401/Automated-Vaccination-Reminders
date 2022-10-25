@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>parentlogin</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'>
+<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+    
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+@import url(https://fonts.googleapis.com/css?family=Arimo:300,400,400italic,700,700italic);
+
+* {
+  margin: 0px;
+  padding: 0px;
+  list-style: none; 
+}
+
+body{
+  font-family: "Open Sans";
+}
+
+img {
+  max-width: 100%; 
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+  color: #444; 
+}
+
+a:hover {
+  color: #444; 
+}
+
+ul {
+  margin-bottom: 0;
+  padding-left: 0; 
+}
+
+ol,ul{
+  margin:0px;
+  padding:0px;
+}
+
+a:hover,
+a:focus,
+input,
+textarea {
+  text-decoration: none;
+  outline: none; 
+}
+
+.form-02-main{
+    width: 100%;
+    height:100vh;
+  background:url(./images/parent.png);
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center;
+  position:relative;
+  z-index:2;
+  overflow:hidden;
+}
+
+._lk_de{
+  
+  background-repeat:no-repeat;
+  background-size:cover;
+  padding:60px 0px;
+  position:relative;
+
+}
+
+.form-03-main{
+  width:500px;
+  display:block;
+  margin:20px auto;
+  padding:25px 50px 25px;
+  background:rgba(255,255,255,0.6);
+  border-radius:6px;
+  z-index:9;
+}
+
+.logo{
+  display:block;
+  margin:20px auto;
+  width:100px;
+  height:100px;
+}
+
+.form-group{
+  padding:20px 0px;
+  display:inline-block;
+  width:100%;
+  position:relative;
+}
+
+.form-group p{
+  margin:0px;
+}
+
+.form-control{
+  min-height:45px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  padding: 10px 15px;
+  border-radius:20px;
+  border:1px solid#2b3990;
+}
+
+
+
+._btn_04 {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 0px;
+    background: #2b3990;
+    border-radius: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+}
+
+._btn_04 a{
+  font-size:15px;
+  color:#fff;
+}
+
+
+
+.nm_lk{
+  text-align:center;
+}
+
+@media screen and (max-width: 600px) {
+  .form-03-main{
+    width: 100%;
+  }
+}
+    </style> 
+    <script>
+       async function phonee(){
+         var phn=document.getElementById("phn").value;
+         var dob=document.getElementById("db").value;
+         localStorage.phno=document.getElementById("phn").value;
+         localStorage.db=document.getElementById("db").value;
+         let response = await fetch("http://localhost:3000/parent/"+phn+"/"+dob);
+         let result = await response.json();
+         console.log(result);
+         if(result.length==0)
+         {
+            document.getElementById("result").innerHTML=`<p style="color:red;">*Incorrect username or password</p>`;
+            // setTimeout(function(){
+            //    window.location.reload();
+            // }, 1000);
+         }
+         else
+         {
+            // window.location.href="/parent.html";
+            window.location.assign('http://localhost:3000/parent.html')
+         }
+       }
+        
+    </script>
+</head>
+<body>
+    <div class="form-02-main">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="_lk_de">
+                <div class="form-03-main">
+                    <div class="logo">
+                        <img src="./images/user.png">
+                      </div>
+                  <div class="form-group">
+                    <input type="tel"  class="form-control _ge_de_ol" id="phn" placeholder="Phone number" required="" aria-required="true">
+                  </div>
+  
+                  <div class="form-group">
+                    <input type="date" class="form-control _ge_de_ol" id="db" placeholder="yyyy-mm-dd" required="" aria-required="true">
+                  </div>
+  
+        
+                  <div class="form-group">
+                    <div class="_btn_04" onclick="phonee()">
+                      Login
+                    </div>
+                  </div>
+                  <div id="result"></div>
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Assistant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+
+    .table{
+      width:70%;
+      align-items: center;
+     margin:1% 161px 1% 161px;
+     border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th{
+      text-align: center;
+    }
+  .green{
+    
+    color:green;
+  }
+  </style>
+  <script>
+
+    async function load() {
+
+      var tablebody = document.getElementById("tbody");
+      var phone = localStorage.getItem("phone");
+      var dob = localStorage.getItem("dob");
+      let response = await fetch("http://localhost:3000/anm/" + phone + "/" + dob);
+      let result = await response.json();
+      var tbody = " ";
+      result.forEach((element) => {
+        tbody += `<tr>
+                <td rowspan=4 align="center">Birth</td><td align="center">BCG</td><td align="center">0.1ml</td><td align="center">Intra-dermal</td><td align="center">Left Upper Arm</td>
+                <td id="bcg" align="center"> ${element.BCG == 'NO' ? `<button type="button" class="btn btn-dark btn-sm" onclick="update1()">YES</button>` : '<p>COMPLETED</p>'}
+                   </td></tr>
+                 <tr><td align="center">O.P.V-0</td><td align="center">2 drops</td><td align="center">Oral</td><td align="center">Mouth</td>
+                <td id="opv0" align="center"> ${element.OPV0 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update2()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                 <tr><td align="center">Hepatisis.B</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-LEFT</td>
+                <td id="hepb" align="center"> ${element.HEPB == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update3()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                 <tr><td></td><td></td><td></td><td></td><td align="center">${element.BCG == "YES" && element.OPV0 == "YES" && element.HEPB == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1">  ALL VACCINES ARE DONE</span>' : '<button type="button" class="btn btn-danger" id="birth" onclick="sms1()">Done</button>'}
+                 </td></tr>
+           </tr>
+            <tr>
+                <td rowspan=4 align="center">6 Weeks</td><td align="center">O.P.V-1</td><td align="center">2 drops</td><td align="center">Oral</td><td align="center">Mouth</td>
+                <td id="opv1" align="center">  ${element.OPV1 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update4()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">Pentavalent-1</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-LEFT</td>
+                        <td id="penta1" align="center">  ${element.PENTA1 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update5()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">I.P.V-1</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-RIGHT</td>
+                        <td id="ipv1" align="center">  ${element.IPV1 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update6()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td></td><td></td><td></td><td></td><td align="center">${element.OPV1 == "YES" && element.OPV0 == "YES" && element.HEPB == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1">  ALL VACCINES ARE DONE</span>' : '<button id="6weeks" type="button" class="btn btn-danger" onclick="sms2()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan=3 align="center">10 Weeks</td><td align="center">O.P.V-2</td><td align="center">2 drops</td><td align="center">Oral</td><td align="center">Mouth</td>
+                <td id="opv2" align="center">  ${element.OPV2 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update7()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">Pentavalent-2</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-LEFT</td>
+                        <td id="penta2" align="center">  ${element.PENTA2 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update8()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td></td><td></td><td></td><td></td><td align="center">${element.OPV2 == "YES" && element.PENTA2 == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1">  ALL VACCINES ARE DONE</span>' : '<button id="10weeks" type="button" class="btn btn-danger" onclick="sms3()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan=4 align="center">14 Weeks</td><td align="center">O.P.V-3</td><td align="center">2 drops</td><td align="center">Oral</td><td align="center">Mouth</td>
+                <td id="opv3" align="center">  ${element.OPV3 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update9()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">Pentavalent-3</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-LEFT</td>
+                        <td id="penta3" align="center">  ${element.PENTA3 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update10()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">I.P.V-2</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-RIGHT</td>
+                        <td id="ipv2" align="center">  ${element.IPV2 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update11()" >YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td></td><td></td><td></td><td></td><td align="center">${element.OPV3 == "YES" && element.PENTA3 == "YES" && element.IPV2 == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1">  ALL VACCINES ARE DONE</span>' : '<button id="14weeks" type="button" class="btn btn-danger" onclick="sms4()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan=3 align="center">9 Months</td><td align="center">Measles-1</td><td align="center">0.5 ml</td><td align="center">Subcutaneous</td><td align="center">Right Upper Arm</td>
+                <td id="measles1" align="center"> ${element.MEASLES1 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update12()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">Vitamin.A</td><td align="center">2 ml</td><td align="center">Oral</td><td align="center">Mouth</td>
+                        <td id="vita1" align="center">  ${element.VITA1 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update13()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td></td><td></td><td></td><td></td><td align="center">${element.MEASLES1 == "YES" && element.VITA1 == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1">  ALL VACCINES ARE DONE</span>' : '<button id="9months" type="button" class="btn btn-danger" onclick="sms5()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan=5 align="center">16-24 Months</td><td align="center">D.P.T Booster 1</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Anterolateral side of mid thigh-LEFT</td>
+                <td id="dptbooster1" align="center"> ${element.DPTBOOSTER1 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update14()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td align="center">O.P.V Booster</td><td align="center">2 drops</td><td align="center">Oral</td><td align="center">Mouth</td>
+                        <td id="opvbooster" align="center"> ${element.OPVBOOSTER == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update15()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                    <tr> <td align="center">Measles-2</td><td align="center">0.5 ml</td><td align="center">Subcutaneous</td><td align="center">Right Upper Arm</td>
+                     <td id="measles2" align="center">  ${element.MEASLES2 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update16()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                      <tr><td align="center">Vitamin.A 2</td><td align="center">2 ml</td><td align="center">Oral</td><td align="center">Mouth</td>
+                        <td id="vita2" align="center">  ${element.VITA2 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update17()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                     <tr><td></td><td></td><td></td><td></td><td align="center">${element.DPTBOOSTER1 == "YES" && element.OPVBOOSTER == "YES" && element.MEASLES2 == "YES" && element.VITA2 == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1">  ALL VACCINES ARE DONE</span>' : '<button id="16-24months" type="button" class="btn btn-danger" onclick="sms6()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center">5-6 Years</td><td align="center">D.P.T Booster 2</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Left Upper Arm</td>
+                <td id="dptbooster2" align="center">  ${element.DPTBOOSTER2 == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update18()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                 <tr><td></td><td></td><td></td><td></td><td align="center">${element.DPTBOOSTER2 == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1"> ALL VACCINES ARE DONE</span>' : '<button id="5-6years" type="button" class="btn btn-danger" onclick="sms7()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center">10 Years</td><td align="center">T.T 1 Booster</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Upper Arm</td>
+                <td id="tt1booster" align="center"> ${element.TT1BOOSTER == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update19()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                 <tr><td></td><td></td><td></td><td></td><td align="center">${element.TT1BOOSTER == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1"> ALL VACCINES ARE DONE</span>' : '<button id="10years" type="button" class="btn btn-danger" onclick="sms8()" >Done</button>'}</td></tr>
+            </tr>
+            <tr>
+                <td rowspan="2" align="center">16 Years</td><td align="center">T.T 2 Booster</td><td align="center">0.5 ml</td><td align="center">Intramuscular</td><td align="center">Upper Arm</td>
+                <td id="tt2booster" align="center"> ${element.TT2BOOSTER == "NO" ? '<button type="button" class="btn btn-dark btn-sm" onclick="update20()">YES</button>' : '<p>COMPLETED</p>'}
+                   </td></tr>
+                 <tr><td></td><td></td><td></td><td></td><td align="center">${element.TT2BOOSTER == "YES" ? '<i class="fa fa-check-circle-o green"></i><span class="ms-1"> ALL VACCINES ARE DONE</span>' : '<button id="16years" type="button" class="btn btn-danger" onclick="sms9()" >Done</button>'}</td></tr>
+            </tr>`;
+      });
+      tablebody.innerHTML = tbody;
+    }
+    function update1() {
+
+      document.getElementById("bcg").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/BCG/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update2() {
+
+      document.getElementById("opv0").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/OPV0/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update3() {
+
+      document.getElementById("hepb").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/HEPB/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update4() {
+
+      document.getElementById("opv1").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/OPV1/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update5() {
+
+      document.getElementById("penta1").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/PENTA1/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update6() {
+
+      document.getElementById("ipv1").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/IPV1/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update7() {
+
+      document.getElementById("opv2").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/OPV2/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update8() {
+
+      document.getElementById("penta2").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/PENTA2/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update9() {
+
+      document.getElementById("opv3").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/OPV3/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update10() {
+
+      document.getElementById("penta3").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/PENTA3/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update11() {
+
+      document.getElementById("ipv2").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/IPV2/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update12() {
+
+      document.getElementById("measles1").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/MEASLES1/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update13() {
+
+      document.getElementById("vita1").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/VITA1/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update14() {
+
+      document.getElementById("dptbooster1").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/DPTBOOSTER1/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update15() {
+
+      document.getElementById("opvbooster").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/OPVBOOSTER/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update16() {
+
+      document.getElementById("measles2").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/MEASLES2/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update17() {
+
+      document.getElementById("vita2").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/VITA2/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update18() {
+
+      document.getElementById("dptbooster2").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/DPTBOOSTER2/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update19() {
+
+      document.getElementById("tt1booster").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/TT1BOOSTER/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function update20() {
+
+      document.getElementById("tt2booster").innerHTML = "COMPLETED";
+      var phone = localStorage.getItem("phone");
+      fetch("http://localhost:3000/anmupdate/TT2BOOSTER/" + phone, {
+        method: 'PUT',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+    function sms1() {
+      //console.log(bcg)
+      document.getElementById("birth").innerHTML="";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+      // console.log(d.toLocaleDateString());
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(41);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+    }
+    function sms2() {
+      document.getElementById("6weeks").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(69);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+
+    }
+    function sms3() {
+      document.getElementById("10weeks").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(97);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+
+    }
+    function sms4() {
+      document.getElementById("14weeks").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+      // console.log(d.toLocaleDateString());
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(269);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+
+    }
+    function sms5() {
+      document.getElementById("9months").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(479);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+      s
+
+    }
+    function sms6() {
+      document.getElementById("16-24months").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+      // console.log(d.toLocaleDateString());
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(1824);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+
+    }
+    function sms7() {
+      document.getElementById("5-6years").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+      // console.log(d.toLocaleDateString());
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(3649);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+
+    }
+    function sms8() {
+      document.getElementById("10years").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      var d = new Date(date);
+      // console.log(d.toLocaleDateString());
+      Date.prototype.addDays = function (days) {
+        var new_date = new Date(this.valueOf());
+        new_date.setDate(new_date.getDate() + days);
+        return new_date;
+      }
+      var new_date = d.addDays(5839);
+      var months = new_date.getMonth() + 1;
+      var str = new_date.getDate() + "/" + months + "/" + new_date.getFullYear();
+      fetch("http://localhost:3000/sms", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn, "dob": new_date, "msg": str })
+      })
+
+
+    }
+    function sms9() {
+      document.getElementById("16years").innerHTML = "";
+      var phn = localStorage.getItem("phone");
+      var date = localStorage.getItem("dob");
+      fetch("http://localhost:3000/sms/complete", {
+        method: 'POST',
+        headers:
+        {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "phn": phn })
+      })
+
+
+    }
+  </script>
+</head>
+
+<body onload="load()">
+  <div>
+   
+    <table class="table" >
+     
+        <thead class="thead-dark">
+        <tr>
+          <th >AGE</th>
+          <th >VACCINE</th>
+          <th >DOSE</th>
+          <th >ROUTE</th>
+          <th>SITE</th>
+          <th ></th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

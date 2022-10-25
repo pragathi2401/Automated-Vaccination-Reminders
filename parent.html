@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+      body{
+        margin: 30px;
+      }
+      .item{
+        padding: 20px;
+      }
+      #mytable,#mytable1{
+        width: 50%;
+      }
+    td{
+      font-size: large;
+    }
+    #btn{
+      padding-top: 15px;
+    }
+    .hidden {
+     display: none; 
+    }
+    
+      
+    </style>
+    <script>
+      function toggleTable() {
+         document.getElementById("mytable1").classList.toggle("hidden");
+       }
+        async function open() {
+            var phn=localStorage.getItem("phno");
+            var db=localStorage.getItem("db");
+        let response = await fetch("http://localhost:3000/parent/"+phn+"/"+db);
+        
+        let result = await response.json();
+        
+        console.log(result);
+        var table='<table class="table" id="mytable" >';
+        result.forEach((element) => {
+          
+          if(element.childName==null)
+          {
+           table += `<tr><td>Father Name  </td><td> ${element.FatherName}</td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                      <tr><td>Mother Name  </td><td> ${element.MotherName}</td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                    <tr><td>Child Name </td><td id="nchild"> <input type="text" id="child">
+                   <button onclick="updatechild()">Add</button></td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                    <tr><td>DOB  </td><td> ${element.dob}</td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                    <tr><td>Gender  </td><td> ${element.gender}</td></tr>
+                    <tr></tr>
+                      <tr></tr>`;
+                    
+          }
+          else
+          {
+            table += `<tr"><td>Father Name  </td><td> ${element.FatherName}</td></tr>
+                      <tr></tr>
+                      <tr></tr>
+                      <tr><td>Mother Name  </td><td> ${element.MotherName}</td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                    <tr"><td>Child Name </td><td> ${element.childName}</td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                    <tr><td>DOB  </td><td> ${element.dob}</td></tr>
+                     <tr></tr>
+                      <tr></tr>
+                    <tr><td>Gender  </td><td> ${element.gender}</td></tr>
+                     <tr></tr>
+                      <tr></tr>`;
+          }          
+        });
+        
+        document.getElementById("result").innerHTML=table;
+        
+      }
+      function updatechild(){
+            var phn=localStorage.getItem("phno");
+          var child=document.getElementById("child").value;
+          console.log(child);
+           document.getElementById("nchild").innerHTML= child;
+           
+           fetch("http://localhost:3000/addchild/"+phn+"/"+child,{method:'PUT',
+          headers:
+          {
+           'Content-Type':'application/json'
+          }})
+        }
+      async function vaccine()
+      {
+        var phn=localStorage.getItem("phno");
+            var db=localStorage.getItem("db");
+        let response=await fetch("http://localhost:3000/vaccination/"+phn+"/"+db);
+        let result=await response.json();
+        var table='<table class="table" id="mytable1">';
+          var d = new Date(db);
+
+Date.prototype.addDays = function (days) {
+  var new_date = new Date(this.valueOf());
+  new_date.setDate(new_date.getDate() + days);
+  return new_date;
+}
+birthdate= d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+week6=d.addDays(42);
+week6date=week6.getDate() + "/" + (week6.getMonth()+1) + "/" + week6.getFullYear();
+nweek10=d.addDays(70);
+week10date=nweek10.getDate() + "/" + (nweek10.getMonth()+1) + "/" + nweek10.getFullYear();
+week14=d.addDays(98);
+week14date=week14.getDate() + "/" + (week14.getMonth()+1) + "/" + week14.getFullYear();
+month9=d.addDays(270);
+month9date=month9.getDate() + "/" + (month9.getMonth()+1) + "/" + month9.getFullYear();
+month16=d.addDays(480);
+month16date=month16.getDate() + "/" + (month16.getMonth()+1) + "/" + month16.getFullYear();
+year5=d.addDays(1825);
+year5date=year5.getDate() + "/" + (year5.getMonth()+1) + "/" + year5.getFullYear();
+year10=d.addDays(3650);
+year10date=year10.getDate() + "/" + (year10.getMonth()+1) + "/" + year10.getFullYear();
+year16=d.addDays(5840);
+year16date=year16.getDate() + "/" + (year16.getMonth()+1) + "/" + year16.getFullYear();
+          table+='<tr><td><b>VACCINE</b></td><td><b>STATUS</b></td></tr>'
+        result.forEach((element)=>{
+          table+=`<tr class="table-success"><td> B.C.G  </td><td>${element.BCG=="YES" ? "<p>Done</p>" : "<p class='birth'>Pending</p>"}</td></tr>
+          <tr><td>O.P.V 0 Dose  </td><td id='bcg'>${element.OPV0=="YES" ? "<p>Done</p>" : "<p class='birth'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>Hepatitis B  </td><td> ${element.HEPB=="YES" ? "<p>Done</p>" : "<p class='birth'>Pending</p>"}</td></tr>
+          <tr ><td>O.P.V - 1  </td><td id='opv1'>${element.OPV1=="YES" ? "<p>Done</p>" : "<p class='week6' >Pending</p>"}</td></tr>
+          <tr class="table-success"><td>Pentavalent 1   </td><td>${element.PENTA1=="YES" ? "<p>Done</p>" : "<p class='week6'>Pending</p>"}</tr>
+          <tr ><td>I.P.V 1  </td><td>${element.IPV1=="YES" ? "<p>Done</p>" : "<p class='week6'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>O.P.V 2  </td><td id='opv2'>${element.OPV2=="YES" ? "<p>Done</p>" : "<p class='week10'>Pending</p>"}</td></tr>
+          <tr><td>Pentavalent 2  </td><td>${element.PENTA2=="YES" ? "<p>Done</p>" : "<p class='week10'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>O.P.V 3  </td><td id='opv3'>${element.OPV3=="YES" ? "<p>Done</p>" : "<p class='week14'>Pending</p>"}</td></tr>
+          <tr><td>Pentavalent 3  </td><td>${element.PENTA3=="YES" ? "<p>Done</p>" : "<p class='week14'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>I.P.V 2  </td><td>${element.IPV2=="YES" ? "<p>Done</p>" : "<p class='week14'>Pending</p>"}</td></tr>
+          <tr><td>Measles 1 </td><td id='measles1'>${element.MEASLES1=="YES" ? "<p>Done</p>" : "<p class='month9'>Pending</p>"} </td></tr>
+          <tr class="table-success"><td>Vitamin.A 1 </td><td>${element.VITA1=="YES" ? "<p>Done</p>" : "<p class='month9'>Pending</p>"}</td></tr>
+          <tr><td>D.P.T Booster 1  </td><td id='dptbooster1'>${element.DPTBOOSTER1=="YES" ? "<p>Done</p>" : "<p class='month16'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>O.P.V Booster  </td><td>${element.OPVBOOSTER=="YES" ? "<p>Done</p>" : "<p class='month16'>Pending</p>"}</td></tr>
+          <tr><td>Measles 2  </td><td>${element.MEASLES2=="YES" ? "<p>Done</p>" : "<p class='month16'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>Vitamin.A 2 </td><td>${element.VITA2=="YES" ? "<p >Done</p>" : "<p class='month16'>Pending</p>"}</td></tr>
+          <tr><td>D.P.T Booster 2  </td><td id='dptbooster2'>${element.DPTBOOSTER2=="YES" ? "<p>Done</p>" : "<p class='year5'>Pending</p>"}</td></tr>
+          <tr class="table-success"><td>T.T 1 Booster  </td><td id='tt1booster'>${element.TT1BOOSTER=="YES" ? "<p>Done</p>" : "<p class='year10'>Pending</p>"}</td></tr>
+          <tr><td>T.T 2 Booster   </td><td id='tt2booster'>${element.TT2BOOSTER=="YES" ? "<p>Done</p>" : "<p class='year16'>Pending</p>"}</td></tr>`
+        });
+        document.getElementById("res").innerHTML=table;
+        if(document.getElementById('bcg').innerText=='Pending')
+        {
+          document.getElementsByClassName("birth")[0].innerHTML="Pending , Due is on : "+birthdate;
+        document.getElementsByClassName("birth")[1].innerHTML="Pending , Due is on : "+birthdate;
+        document.getElementsByClassName("birth")[2].innerHTML="Pending , Due is on : "+birthdate;
+        }
+        if(document.getElementById('opv1').innerText=='Pending'){
+          console.log("I am at 6th week");
+        document.getElementsByClassName("week6")[0].innerHTML="Pending , Due is on : "+week6date;
+        document.getElementsByClassName("week6")[1].innerHTML="Pending , Due is on : "+week6date;
+        document.getElementsByClassName("week6")[2].innerHTML="Pending , Due is on : "+week6date;
+        }
+        if(document.getElementById('opv2').innerText=='Pending'){
+          console.log("I am at 10th week");
+        document.getElementsByClassName("week10")[0].innerHTML="Pending , Due is on : "+week10date;
+        document.getElementsByClassName("week10")[1].innerHTML="Pending , Due is on : "+week10date;
+      } 
+      if(document.getElementById('opv3').innerText=='Pending'){
+        document.getElementsByClassName("week14")[0].innerHTML="Pending , Due is on : "+week14date;
+        document.getElementsByClassName("week14")[1].innerHTML="Pending , Due is on : "+week14date;
+        document.getElementsByClassName("week14")[2].innerHTML="Pending , Due is on : "+week14date;
+      }
+      if(document.getElementById('measles1').innerText=='Pending'){ 
+        document.getElementsByClassName("month9")[0].innerHTML="Pending , Due is on : "+month9date;
+        document.getElementsByClassName("month9")[1].innerHTML="Pending , Due is on : "+month9date;
+      }
+      if(document.getElementById('dptbooster1').innerText=='Pending'){
+        document.getElementsByClassName("month16")[0].innerHTML="Pending , Due is on : "+month16date;
+        document.getElementsByClassName("month16")[1].innerHTML="Pending , Due is on : "+month16date;
+        document.getElementsByClassName("month16")[2].innerHTML="Pending , Due is on : "+month16date;
+        document.getElementsByClassName("month16")[3].innerHTML="Pending , Due is on : "+month16date;
+      }
+      if(document.getElementById('dptbooster2').innerText=='Pending'){
+        document.getElementsByClassName("year5")[0].innerHTML="Pending , Due is on : "+year5date;
+      }
+      if(document.getElementById('tt1booster').innerText=='Pending'){
+        document.getElementsByClassName("year10")[0].innerHTML="Pending , Due is on : "+year10date;
+      }
+      if(document.getElementById('tt2booster').innerText=='Pending'){
+        document.getElementsByClassName("year16")[0].innerHTML="Pending , Due is on : "+year16date;
+      }
+      }
+    
+       
+      
+    </script>
+</head>
+<body onload="open();">
+  <div>
+    <div class="item">
+   <div id="result"></div>
+   <div id="btn"><button onclick="vaccine()" type="button"  class="btn btn-primary btn-lg">Get Vaccination Details</button></div>
+  </div>
+  <div class="item">
+   <div id="res"></div>
+  
+  </div>
+  </div>
+</body>
+</html>
